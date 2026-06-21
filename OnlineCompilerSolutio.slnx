@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CompilerMicroservice/CompilerMicroservice.csproj" Id="f1f26551-155c-4dac-a8d7-89862089a976" />
+  <Project Path="OnlineCompilerWebForms/OnlineCompilerWebForms.csproj" Id="96431c8e-0c57-4812-81e3-836fe754fdf3" />
+</Solution>

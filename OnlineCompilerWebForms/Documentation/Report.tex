@@ -1,0 +1,57 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\definecolor{mousoublue}{RGB}{0, 210, 255}
+
+\title{\textbf{\textcolor{mousoublue}{MouSou Online Compiler Platform}} \\ System Architecture \& Implementation Report}
+\author{Mouhamad Hammoud \and Mamdouh Ossman}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction}
+The MouSou Online Compiler is a state-of-the-art web-based Integrated Development Environment (IDE) built upon the ASP.NET Web Forms framework. It provides users with a comprehensive workspace to create, manage, and execute multi-file programming projects, enriched heavily by cutting-edge Artificial Intelligence capabilities.
+
+\section{System Architecture}
+The system follows a classic N-Tier architecture modified for modern microservice execution and external API integrations.
+
+\subsection{Frontend Layer}
+The user interface leverages \textbf{Bootstrap 5} and \textbf{Monaco Editor} (the core engine behind VS Code) to deliver a rich, syntax-highlighted coding experience. Communication with the backend is achieved via asynchronous AJAX calls and ASP.NET \texttt{UpdatePanel}s to ensure a seamless, single-page application feel without full page reloads.
+
+\subsection{Backend Application Layer}
+Built in C\# using ASP.NET Web Forms (.NET Framework 4.7.2), the application layer adheres to the \textbf{Repository Pattern}. 
+\begin{itemize}
+    \item \textbf{Handlers:} \texttt{AiChatHandler.ashx} intercepts frontend AI requests, compiles the necessary workspace context, and formats it for the AI service.
+    \item \textbf{Services:} \texttt{AiService.cs} manages external HTTP communication with OpenRouter, while \texttt{MicroserviceClient.cs} communicates with the isolated execution engine.
+\end{itemize}
+
+\subsection{Data Access \& Storage}
+The platform utilizes SQL Server LocalDB via raw ADO.NET connections. Data is strictly normalized into Users, Projects, and Files tables. Physical code files are synchronized to an \texttt{App\_Data} directory for rapid read/write operations during compilation.
+
+\section{Artificial Intelligence Integration}
+The platform distinguishes itself through deep integration with Large Language Models (LLMs) via the OpenRouter API (utilizing Qwen Coder).
+
+\subsection{Context-Aware Assistant}
+Unlike standard chatbots, the MouSou AI Assistant uses a \texttt{@} mention system. When a user mentions a file, the backend reads the physical file and prepends its entire content to the system prompt, giving the LLM zero-shot spatial awareness of the project.
+
+\subsection{AI Project Generator}
+The platform includes an AI scaffolding engine. Users provide a natural language prompt, and the AI returns a strict JSON payload mapping file names to source code. The C\# backend parses this JSON, automates database inserts, and provisions the entire project instantaneously.
+
+\subsection{Automated Code Review}
+The \texttt{AiCodeReview.aspx} dashboard aggregates all files within a project and requests a quantitative analysis from the LLM, returning a scored Health Report focusing on Security, Performance, and Readability.
+
+\section{Conclusion}
+By merging robust enterprise patterns with modern AI tooling, the MouSou Online Compiler represents a significant leap forward in web-based educational and professional development environments.
+
+\end{document}

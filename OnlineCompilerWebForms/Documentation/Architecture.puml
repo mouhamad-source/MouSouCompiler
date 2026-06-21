@@ -1,0 +1,57 @@
+@startuml MouSou Online Compiler Architecture
+
+skinparam backgroundColor #1E1E1E
+skinparam fontColor #FFFFFF
+skinparam defaultFontName Inter
+skinparam ArrowColor #00D2FF
+skinparam roundcorner 15
+skinparam componentStyle uml2
+
+title "MouSou Online Compiler - System Architecture"
+
+package "Frontend Layer (Browser)" {
+    [Monaco Editor] as Monaco
+    [AI Chat UI] as ChatUI
+    [Dashboard & Community] as UI
+}
+
+package "ASP.NET Web Forms Backend" {
+    [Editor.aspx] as EditorPage
+    [AiChatHandler.ashx] as AIHandler
+    [AiService.cs] as AIService
+    [ProjectService] as ProjectSvc
+    [FileService] as FileSvc
+    [MicroserviceClient] as ExecClient
+}
+
+package "Data Access Layer" {
+    database "SQL Server (MouSou.mdf)" as DB {
+        [Users Table]
+        [Projects Table]
+        [Files Table]
+    }
+}
+
+cloud "External Services" {
+    [OpenRouter AI API] as OpenRouter
+    [Compiler Microservice (Web API)] as Microservice
+}
+
+' Relationships
+Monaco <--> EditorPage : "WebSocket/AJAX Sync"
+ChatUI --> AIHandler : "POST / Mention Context"
+UI --> ProjectSvc : "Fetch/Create Projects"
+
+EditorPage --> ExecClient : "Submit Code"
+ExecClient --> Microservice : "HTTP POST Execution Request"
+Microservice --> ExecClient : "Execution Response (Stdout/Errors)"
+
+AIHandler --> AIService : "Assemble Context"
+AIService --> OpenRouter : "HTTP POST (JSON Schema)"
+OpenRouter --> AIService : "Markdown / Code Patch"
+
+ProjectSvc --> DB : "ADO.NET CRUD"
+FileSvc --> DB : "ADO.NET CRUD"
+FileSvc ..> [File System] : "Physical Code Storage"
+
+@enduml
